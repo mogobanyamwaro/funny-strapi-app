@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-connection
+  namespace: amaka
+  labels:
+    helm.sh/hook: test
+spec:
+  template:
+    spec:
+      containers:
+        - name: test-frontend
+          image: busybox
+          command:
+            [
+              "wget",
+              "--spider",
+              "-S",
+              "http://strapi-frontend-service.amaka.svc.cluster.local",
+            ]
+        - name: test-strapi
+          image: busybox
+          command:
+            [
+              "wget",
+              "--spider",
+              "-S",
+              "http://strapi-service.amaka.svc.cluster.local",
+            ]
+        - name: test-db
+          image: postgres:16
+          command: ["sh", "-c", "pg_isready -h postgres -p 5432 -U strapi"]
+      restartPolicy: Never

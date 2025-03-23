@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: strapi-config
+  namespace: amaka
+data:
+  HOST: "0.0.0.0"
+  PORT: "1337"
+  DATABASE_CLIENT: "postgres"
+  DATABASE_HOST: "postgres"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "strapi"
+  DATABASE_USERNAME: "strapi"
+  DATABASE_SSL: "false"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: strapi-secrets
+  namespace: amaka
+type: Opaque
+data:
+  APP_KEYS: "NC9PaUdlaFZWYkhxTlJmYXI4WFpjdz09LFJhZUt0Ykl1enMwbzFjSzRZaVFWT1E9PSxCOC9TVFpCR0xOZVU4bkhXb3hKdDl3PT0sakVlczBGMGY2SGRod2l1VThoYldQdz09"
+  API_TOKEN_SALT: "SzA1UlF2aytYc3YweTdDc1FhY0xlZz09"
+  ADMIN_JWT_SECRET: "V3hiOGhJbWZUbmJQTXhoZzdocW9NZz09"
+  TRANSFER_TOKEN_SALT: "emh1d1dabGhZb1FIM1Q5MEdLQU9tQT09"
+  DATABASE_PASSWORD: "c3RyYXBp"
+  JWT_SECRET: "ZUVnVTJIMnh5RHN5SCtZK2JZbUtkUT09"
+  GOOGLE_GEMINI_API_KEY: "QUl6YVN5REtfM1lPalpoWTg2Z0wzSDRBbnh0WmpVOW1tc01rR0lr"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strapi-deployment
+  namespace: amaka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strapi
+  template:
+    metadata:
+      labels:
+        app: strapi
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "1337" # The port your application listens to.
+    spec:
+      containers:
+        - name: strapi
+          image: mogobanyamwaro/strapi-backend:latest
+          ports:
+            - containerPort: 1337
+          resources:
+            requests:
+              memory: "400Mi"
+              cpu: "200m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          env:
+            - name: HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: HOST
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: PORT
+            - name: DATABASE_CLIENT
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: DATABASE_CLIENT
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: DATABASE_HOST
+            - name: DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: DATABASE_PORT
+            - name: DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: DATABASE_NAME
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: DATABASE_USERNAME
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_SSL
+              valueFrom:
+                configMapKeyRef:
+                  name: strapi-config
+                  key: DATABASE_SSL
+            - name: APP_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: APP_KEYS
+            - name: API_TOKEN_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: API_TOKEN_SALT
+            - name: ADMIN_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: ADMIN_JWT_SECRET
+            - name: TRANSFER_TOKEN_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: TRANSFER_TOKEN_SALT
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: JWT_SECRET
+            - name: GOOGLE_GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: strapi-secrets
+                  key: GOOGLE_GEMINI_API_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: strapi-service
+  namespace: amaka
+spec:
+  selector:
+    app: strapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 1337
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: strapi-ingress
+  namespace: amaka
+  annotations:
+    kubernetes.io/ingress.class: "public"
+spec:
+  ingressClassName: public
+  rules:
+    - host: strapi.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: strapi-service
+                port:
+                  number: 80
+# microk8s kubectl port-forward -n ingress daemonset/nginx-ingress-microk8s-controller 8080:80

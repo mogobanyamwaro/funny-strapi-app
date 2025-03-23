@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: amaka
+spec:
+  replicas: { { .Values.replicaCount } }
+  selector:
+    matchLabels:
+      app: strapi-frontend
+  template:
+    metadata:
+      labels:
+        app: strapi-frontend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+    spec:
+      containers:
+        - name: strapi-frontend
+          image: { { .Values.frontend.image } }
+          imagePullPolicy: Always
+          ports:
+            - containerPort: { { .Values.frontend.containerPort } }
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1000m"
+            limits:
+              memory: "1024Mi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: strapi-frontend-service
+  namespace: amaka
+spec:
+  selector:
+    app: strapi-frontend
+  ports:
+    - protocol: TCP
+      port: { { .Values.frontend.service.port } }
+      targetPort: { { .Values.frontend.service.targetPort } }
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: strapi-frontend-ingress
+  namespace: amaka
+  annotations:
+    kubernetes.io/ingress.class: { { .Values.ingress.class } }
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: { { .Values.ingress.host } }
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: strapi-frontend-service
+                port:
+                  number: { { .Values.ingress.port } }

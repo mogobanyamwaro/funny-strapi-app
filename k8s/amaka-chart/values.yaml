@@ -1,0 +1,46 @@
+replicaCount: 1
+
+frontend:
+  image: mogobanyamwaro/strapi-frontend:latest
+  containerPort: 3000
+  service:
+    port: 80
+    targetPort: 3000
+
+strapi:
+  image: mogobanyamwaro/strapi-backend:latest
+  containerPort: 1337
+  service:
+    port: 80
+  env:
+    HOST: "0.0.0.0"
+    PORT: "1337"
+    DATABASE_CLIENT: "postgres"
+    DATABASE_HOST: "postgres"
+    DATABASE_PORT: "5432"
+    DATABASE_NAME: "strapi"
+    DATABASE_USERNAME: "strapi"
+    DATABASE_PASSWORD: "strapi"
+    DATABASE_SSL: "false"
+
+postgres:
+  image: postgres:16
+  containerPort: 5432
+  storage: 5Gi
+  database:
+    name: strapi
+    user: strapi
+    password: strapi
+
+ingress:
+  enabled: true
+  host: "strapi-frontend.local"
+  class: "nginx"
+  port: 80
+
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  cpuUtilization: 10
+  memoryUtilization: 10
