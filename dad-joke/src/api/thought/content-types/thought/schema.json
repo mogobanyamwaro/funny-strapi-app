@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "thoughts",
+  "info": {
+    "singularName": "thought",
+    "pluralName": "thoughts",
+    "displayName": "thought"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "text": {
+      "type": "text"
+    }
+  }
+}

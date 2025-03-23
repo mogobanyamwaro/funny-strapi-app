@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "dadi_jokes",
+  "info": {
+    "singularName": "dadi-joke",
+    "pluralName": "dadi-jokes",
+    "displayName": "dadi-joke",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "text": {
+      "type": "string"
+    }
+  }
+}
