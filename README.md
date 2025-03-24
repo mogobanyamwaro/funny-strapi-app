@@ -182,6 +182,17 @@ k9s -n amaka
 
 Here is the loom video link showcasing HPA in action: [https://www.loom.com/share/5af9893935cd46838f651d1e34512eea?sid=1694551c-e50f-49c3-8eea-29e6f04d048f](https://www.loom.com/share/5af9893935cd46838f651d1e34512eea?sid=1694551c-e50f-49c3-8eea-29e6f04d048f)
 
+Also , here is the screenshot of the HPA in action:
+
+This is before the load test:
+![Screenshot](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/1.png?raw=true)
+
+This is after the load test:
+![Screenshot](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/2.png?raw=true)
+
+And this after the load test is done:
+![Screenshot](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/3.png?raw=true)
+
 ---
 
 ## Helm Chart Deployment
