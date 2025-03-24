@@ -180,18 +180,47 @@ Monitor pods and autoscaler using:
 k9s -n amaka
 ```
 
-Here is the loom video link showcasing HPA in action: [https://www.loom.com/share/5af9893935cd46838f651d1e34512eea?sid=1694551c-e50f-49c3-8eea-29e6f04d048f](https://www.loom.com/share/5af9893935cd46838f651d1e34512eea?sid=1694551c-e50f-49c3-8eea-29e6f04d048f)
+Here’s a more professional and structured version of your README section:
 
-Also , here is the screenshot of the HPA in action:
+````md
+### Monitoring with K9s
 
-This is before the load test:
-![Screenshot](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/1.png?raw=true)
+To monitor pods and the Horizontal Pod Autoscaler (HPA) in real-time, use the following command:
 
-This is after the load test:
-![Screenshot](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/2.png?raw=true)
+```sh
+k9s -n amaka
+```
+````
 
-And this after the load test is done:
-![Screenshot](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/3.png?raw=true)
+### HPA in Action
+
+The following Loom video demonstrates the HPA scaling behavior in response to load changes:
+
+🔗 **Watch the video**: [HPA Scaling Demonstration](https://www.loom.com/share/5af9893935cd46838f651d1e34512eea?sid=1694551c-e50f-49c3-8eea-29e6f04d048f)
+
+### HPA Scaling Behavior
+
+Below are screenshots showcasing how the HPA dynamically adjusts the number of pods based on load conditions:
+
+#### **Before Load Test**
+
+The system operates under normal conditions with minimal resource usage.
+
+![Before Load Test](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/1.png?raw=true)
+
+#### **During Load Test**
+
+As the load increases, the HPA scales up by adding more pods.
+
+![During Load Test](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/2.png?raw=true)
+
+#### **After Load Test**
+
+Once the load reduces, the HPA scales down the number of pods.
+
+![After Load Test](https://github.com/mogobanyamwaro/funny-strapi-app/blob/main/3.png?raw=true)
+
+This behavior confirms that the **Horizontal Pod Autoscaler (HPA) is functioning as expected**, dynamically adjusting pod count based on real-time workload.
 
 ---
 
